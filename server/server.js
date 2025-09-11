@@ -5,20 +5,16 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
-// Load environment variables from .env file
 dotenv.config();
 
 const app = express();
 const port = 8000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Initialize the Google Generative AI client
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Define the API endpoint
 app.post('/gemini', async (req, res) => {
   try {
     const { text } = req.body;
@@ -28,13 +24,34 @@ app.post('/gemini', async (req, res) => {
 
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
+    // This is our new, much smarter prompt!
     const prompt = `
-      You are an expert legal analyst. Your task is to analyze a legal clause and provide a concise, easy-to-understand summary.
-      Analyze the following legal text: "${text}"
+      You are Precedent-Pro, a helpful and friendly AI Legal Co-Pilot.
 
-      Provide your analysis in the following format:
-      1.  A 5-bullet point summary of the key commitments, obligations, and risks.
-      2.  A "Jargon Score" from 1 (very simple) to 10 (very complex), representing how difficult the text is for a layperson to understand.
+      First, analyze the user's input to determine their intent. There are two possibilities:
+      1.  **Legal Analysis Request:** The user has provided a legal clause, a snippet of a contract, terms of service, or is asking a specific question about a legal process. The text will likely be long, formal, or contain legal jargon.
+      2.  **General Conversation:** The user is asking a simple question, making a greeting (like "hi", "hello", "how are you"), or having a casual conversation.
+
+      Based on the intent, respond in ONE of the following two ways:
+
+      ---
+      **IF the intent is "Legal Analysis Request":**
+      Respond ONLY with the following structured format. Do not add any conversational text before or after this structure.
+      **1. Five-Bullet Point Summary of Key Commitments, Obligations, and Risks:**
+      * Point 1
+      * Point 2
+      * Point 3
+      * Point 4
+      * Point 5
+      **2. Jargon Score:**
+      A score from 1 (very simple) to 10 (very complex), with a brief explanation.
+
+      ---
+      **IF the intent is "General Conversation":**
+      Respond in a friendly, helpful, and conversational tone. Do not use the structured legal analysis format. Be concise and natural, like a world-class chatbot.
+
+      ---
+      Here is the user's input: "${text}"
     `;
 
     const result = await model.generateContent(prompt);
@@ -48,7 +65,6 @@ app.post('/gemini', async (req, res) => {
   }
 });
 
-// Start the server
 app.listen(port, () => {
   console.log(`✅ Server is running on port ${port}`);
 });
