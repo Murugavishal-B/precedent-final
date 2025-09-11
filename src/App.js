@@ -28,14 +28,15 @@ import {
     getDownloadURL 
 } from "firebase/storage";
 
-// --- PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE ---
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCukgVVzjjoDvqV2rMnA6wOi9KYPPv9mrg",
+  authDomain: "precedent-pro.firebaseapp.com",
+  projectId: "precedent-pro",
+  storageBucket: "precedent-pro.firebasestorage.app",
+  messagingSenderId: "587945946358",
+  appId: "1:587945946358:web:19b1932f6369f8aab990d7",
+  measurementId: "G-512QNGXYB6"
 };
 // --- END OF FIREBASE CONFIGURATION ---
 
