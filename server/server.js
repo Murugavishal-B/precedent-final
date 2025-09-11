@@ -19,7 +19,7 @@ app.post('/gemini', async (req, res) => {
     // The front-end now sends the chat history along with the new text
     const { history, text, fileUrl } = req.body;
     
-    // User must provide at least some text to analyze
+    // User must provide at least some text or a file to analyze
     if (!text && !fileUrl) {
       return res.status(400).send({ error: 'Text input or a file is required.' });
     }
@@ -37,7 +37,7 @@ app.post('/gemini', async (req, res) => {
     // Create the new prompt for the AI
     let prompt = text;
 
-    // If a file was uploaded, add a special note to the prompt
+    // If a file was uploaded, add a special note to the prompt for the AI to consider
     if (fileUrl) {
         prompt += `\n\n[System Note: The user has uploaded a file relevant to this conversation. Please analyze it in the context of our chat. The file can be accessed at: ${fileUrl}]`;
     }
