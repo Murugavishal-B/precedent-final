@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-// --- IMPORTANT: Install Firebase! ---
+// --- IMPORTANT: Make sure Firebase is installed! ---
 // In your terminal, run: npm install firebase
 import { initializeApp } from 'firebase/app';
 import { 
@@ -28,19 +28,16 @@ import {
     getDownloadURL 
 } from "firebase/storage";
 
-// --- PASTE THE FIREBASE CONFIG OBJECT YOU COPIED HERE ---
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// --- PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE ---
 const firebaseConfig = {
-  apiKey: "AIzaSyCukgVVzjjoDvqV2rMnA6wOi9KYPPv9mrg",
-  authDomain: "precedent-pro.firebaseapp.com",
-  projectId: "precedent-pro",
-  storageBucket: "precedent-pro.firebasestorage.app",
-  messagingSenderId: "587945946358",
-  appId: "1:587945946358:web:19b1932f6369f8aab990d7",
-  measurementId: "G-512QNGXYB6"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
-// --- END OF FIREBASE CONFIG ---
-
+// --- END OF FIREBASE CONFIGURATION ---
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -168,16 +165,17 @@ const ChatApplication = ({ user }) => {
         await addDoc(collection(db, `users/${user.uid}/history`), userMessage);
         
         try {
+            // ** CRITICAL UPGRADE: Send previous messages for context **
             const historyForApi = messages.map(m => ({
                 role: m.sender === 'user' ? 'user' : 'model',
                 parts: [{ text: m.text }]
             }));
 
-           const response = await fetch('https://precedent-pro-server.onrender.com/gemini', { // <-- YOUR RENDER URL
+            const response = await fetch('https://precedent-pro-server.onrender.com/gemini', { // <-- YOUR RENDER URL
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    history: historyForApi,
+                    history: historyForApi, // Send the history
                     text: userInput, 
                     fileUrl 
                 }),
@@ -210,20 +208,22 @@ const ChatApplication = ({ user }) => {
     return (
         <div className="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
             <Sidebar user={user} />
-            <div className="flex-1 flex flex-col">
+            {/* Main Chat Area with Mobile-First design */}
+            <main className="flex-1 flex flex-col h-screen">
                 <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
                     {messages.map((msg) => <ChatMessage key={msg.id} msg={msg} />)}
                     {isLoading && <LoadingBubble />}
                     <div ref={chatEndRef} />
                 </div>
                 <InputArea {...{input, setInput, handleSend, isLoading, fileInputRef, handleFileChange, filePreview, setFilePreview, setFile, handleMic, isListening}} />
-            </div>
+            </main>
         </div>
     );
 };
 
+// ** UPGRADED SIDEBAR: Hidden on mobile (md:flex) **
 const Sidebar = ({ user }) => (
-    <aside className="w-0 sm:w-64 bg-gray-50 dark:bg-gray-800 p-4 flex-col hidden md:flex">
+    <aside className="w-64 bg-gray-50 dark:bg-gray-800 p-4 flex-col hidden md:flex">
         <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400">Precedent Pro</h1>
         <p className="text-sm text-gray-500 mb-6">AI Legal Assistant</p>
         <div className="flex-grow"><h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">History</h2></div>
@@ -264,6 +264,7 @@ const LoadingBubble = () => (
     </div>
 );
 
+// ** UPGRADED INPUT AREA: Fixed position on mobile, better styling **
 const InputArea = ({ input, setInput, handleSend, isLoading, fileInputRef, handleFileChange, filePreview, setFilePreview, setFile, handleMic, isListening }) => {
     const handleKeyPress = (e) => (e.key === 'Enter' && !e.shiftKey) && (e.preventDefault(), handleSend());
     return (
