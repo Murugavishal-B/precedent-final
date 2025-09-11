@@ -29,13 +29,15 @@ import {
 } from "firebase/storage";
 
 // --- PASTE THE FIREBASE CONFIG OBJECT YOU COPIED HERE ---
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCukgVVzjjoDvqV2rMnA6wOi9KYPPv9mrg",
+  authDomain: "precedent-pro.firebaseapp.com",
+  projectId: "precedent-pro",
+  storageBucket: "precedent-pro.firebasestorage.app",
+  messagingSenderId: "587945946358",
+  appId: "1:587945946358:web:19b1932f6369f8aab990d7",
+  measurementId: "G-512QNGXYB6"
 };
 // --- END OF FIREBASE CONFIG ---
 
@@ -171,7 +173,7 @@ const ChatApplication = ({ user }) => {
                 parts: [{ text: m.text }]
             }));
 
-            const response = await fetch('https://precedent-pro-server.onrender.com/gemini', { // <-- YOUR RENDER URL
+           const response = await fetch('https://precedent-pro-server.onrender.com/gemini', { // <-- YOUR RENDER URL
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
